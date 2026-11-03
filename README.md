@@ -13,7 +13,7 @@ CBTIS No. 200 · Programación · 3AM PRG · Docente: Mtro. Omar Torres Sánchez
 | Scrum Master | Blas Israel Bautista Sánchez |
 | Equipo de desarrollo | Blas Israel Bautista Sánchez |
 
-Tablero del proyecto: (pega aquí la liga de tu tablero de GitHub Projects)
+Tablero del proyecto: (https://github.com/bautistasanchezbamprg25-dev/CalifiApp)
 
 ## Historias de usuario terminadas
 
