@@ -11,12 +11,15 @@
 #  Organización (una función por historia de usuario):
 #    opcion_registrar()  -> HU-01     opcion_capturar()  -> HU-02
 #    opcion_promedios()  -> HU-03     opcion_reporte()   -> HU-04
+#    opcion_lista()      -> HU-05     opcion_consultar() -> HU-06
+#    iniciar_datos() y guardar()      -> HU-07
+#    opcion_riesgo()     -> HU-08
 #  El menú principal, main(), llama a cada una según la opción.
 # ==============================================================
 
 from calificaciones import (LIMITE_ALUMNOS, registrar_alumno,nombre_repetido,validar_calificacion,
                             calcular_promedio, obtener_estatus, fila_reporte, promedio_grupal,
-                            lista_ordenada, linea_lista, buscar_alumno)
+                            lista_ordenada, linea_lista, buscar_alumno, alumnos_sin_calificar, alumnos_en_riesgo)
 
 from almacen import RUTA_DATOS, guardar_datos, cargar_datos
 
@@ -49,8 +52,12 @@ def opcion_capturar():
     if len(alumnos) == 0:
         print("\nPrimero registra alumnos (opción 1).")
         return
+    pendientes = alumnos_sin_calificar(alumnos, calificaciones)
+    if len(pendientes) ==0:
+        print("\nTodos los alumnos ya tienen sus calificaciones")
+        return
     print("\nCAPTURAR CALIFICACIONES (de 0 a 10)")
-    for nombre in alumnos:
+    for nombre in pendientes:
         parciales = []
         print("Alumno:", nombre)
         while len(parciales) < PARCIALES:
@@ -139,6 +146,21 @@ def opcion_consultar():
     promedio = calcular_promedio(parciales)
     print(" Promedio:", promedio, obtener_estatus(promedio))
 
+# HU-08 Ver alumnos en riesgo
+def opcion_riesgo():
+    if len(calificaciones) == 0:
+        print("\nPrimero captura calificaciones (opción 2).")
+        return
+    print("\nALUMNOS EN RIESGO (promedio menor a 6)")
+    print("-" * 50)
+    en_riesgo = alumnos_en_riesgo(calificaciones)
+    for nombre, promedio in en_riesgo:
+        print(fila_reporte(nombre, promedio))
+    if len(en_riesgo) == 0:
+        print("Nadie está en riesgo. ¡Todos aprueban!")
+    print("-" * 50)
+    print("En riesgo:", len(en_riesgo), "de", len(calificaciones), "alumnos con calificaciones")
+
 # HU-07 Guardar y cargar los datos
 def guardar():
     guardar_datos(RUTA_DATOS, alumnos, calificaciones)
@@ -170,6 +192,7 @@ def main():
         print("  4. Mostrar reporte del grupo     (HU-04)")
         print("  5. Ver lista del grupo           (HU-05)")
         print("  6. Consultar a un alumno         (HU-06)")
+        print("  7. Ver alumnos en riesgo         (HU-07)")
         print("  0. Salir")
         print("-" * 50)
 
@@ -189,10 +212,12 @@ def main():
             opcion_lista()
         elif opcion == "6":
             opcion_consultar()
+        elif opcion =="7":
+            opcion_riesgo()
         elif opcion == "0":
             print("Gracias por usar " + NOMBRE_APP + ". ¡Hasta pronto!")
         else:
-            print("\nOpción no válida. Escribe un número del 0 al 6.")
+            print("\nOpción no válida. Escribe un número del 0 al 7.")
 
         if opcion != "0":
             input("\nPresiona ENTER para volver al menú...")
